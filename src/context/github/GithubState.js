@@ -1,10 +1,11 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useEffect } from "react";
 import axios from "axios";
 import GithubContext from "./githubContext";
 import GithubReducer from "./githubReducer";
 import {
   SEARCH_USERS,
   SET_LOADING,
+  INITIAL_USERS,
   CLEAR_USERS,
   GET_USER,
   GET_REPOS
@@ -36,7 +37,26 @@ const GithubState = props => {
     });
   };
 
-  // Get User
+  // Fetch array of users on page load
+  const initialUsers = useEffect(() => {
+    setLoading();
+
+    axios
+      .get(
+        `https://api.github.com/users?client_id=$
+      {process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${
+        process.env.REACT_APP_GITHUB_CLIENT_SECRET
+      }`
+      )
+      .then(res => {
+        dispatch({
+          type: INITIAL_USERS,
+          payload: res.data
+        });
+      });
+  }, []);
+
+  // Get single user
   const getUser = async username => {
     setLoading();
 
@@ -67,7 +87,7 @@ const GithubState = props => {
     dispatch({
       type: GET_REPOS,
       payload: res.data
-    })
+    });
   };
 
   // Clear Users
@@ -83,10 +103,11 @@ const GithubState = props => {
         user: state.user,
         repos: state.repos,
         loading: state.loading,
+        initialUsers,
         searchUsers,
         clearUsers,
         getUser,
-        getUserRepos,
+        getUserRepos
       }}
     >
       {props.children}

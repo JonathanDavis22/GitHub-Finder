@@ -6,7 +6,7 @@ const About = () => {
       <h1>About This App</h1>
       <p>React app to search GitHub users</p>
       <p>
-        Version: 1.2.3{" "}
+        Version: 1.2.3
         <span role='img' aria-label='Cowboy Face'>
           {" "}
           🤠
